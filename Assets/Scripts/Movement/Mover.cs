@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Mover : MonoBehaviour {
     private UnityEngine.AI.NavMeshAgent agent;
@@ -12,20 +14,13 @@ public class Mover : MonoBehaviour {
     }
 
     private void Update () {
-        // Continuous click move    --->    GetMouseButton
-        // OneShoot  click move     --->    GetMouseButtonDown
-        if (Input.GetMouseButton (0)) {
-            MoveToCursor ();
-        }
         UpdateAnimator ();
     }
 
-    private void MoveToCursor () {
-        lastRay = Camera.main.ScreenPointToRay (Input.mousePosition);
-        if (Physics.Raycast (lastRay, out RaycastHit hit)) {
-            agent.destination = hit.point;
-        }
-        Debug.DrawRay (lastRay.origin, lastRay.direction * 100);
+
+
+    public void MoveTo (Vector3 destination) {
+        GetComponent<UnityEngine.AI.NavMeshAgent> ().destination = destination;
     }
 
     private void UpdateAnimator () {
@@ -33,7 +28,11 @@ public class Mover : MonoBehaviour {
         // TransformDirection           direction   local   to global
         Vector3 localVelocity = transform.InverseTransformDirection (agent.velocity);
         forwardSpeed = localVelocity.z;
-        Debug.Log ("[MoveToCursor] forwardSpeed " + forwardSpeed);
         animator.SetFloat ("forwardSpeed", forwardSpeed);
+    }
+
+    public void setRange (float range) {
+        agent.stoppingDistance = range;
+        Debug.Log ("agent.stoppingDistance " + agent.stoppingDistance);
     }
 }
