@@ -11,7 +11,8 @@ public class FollowCamera : MonoBehaviour {
     }
 
 
-    private void Update() {
+    // Evita che la camera sia un po' "stick"
+    private void LateUpdate() {
         transform.position = player.transform.position + distanceToPlayer;
     }
 }
