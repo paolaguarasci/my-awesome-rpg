@@ -4,15 +4,21 @@ public class MoveToCursor : MonoBehaviour {
     [SerializeField] private Transform positionTarget;
     private UnityEngine.AI.NavMeshAgent agent;
     private Ray lastRay;
+    private Animator animator;
+    private float forwardSpeed;
 
     private void Start() {
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update() {
         if (Input.GetMouseButtonDown(0)) {
             MoveTo();
         }
+        forwardSpeed = Mathf.Clamp(Mathf.Abs(agent.velocity.z), 0.0f, 1.0f);
+        Debug.Log("[MoveToCursor] forwardSpeed " + forwardSpeed);
+        animator.SetFloat("forwardSpeed", forwardSpeed);
     }
 
     private void MoveTo() {
