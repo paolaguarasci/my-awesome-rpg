@@ -24,7 +24,9 @@ namespace RPG.Control {
             RaycastHit[] hits = Physics.RaycastAll (GetMouseRay ());
             foreach (RaycastHit hit in hits) {
                 if (hit.transform.GetComponent<ReactiveTarget> ()) {
-                    combat.Attack ();
+                    if (Input.GetMouseButtonDown (0)) {
+                        combat.Attack (hit.transform.GetComponent<ReactiveTarget> ());
+                    }
                 }
             }
         }
