@@ -9,14 +9,26 @@ namespace RPG.Combat {
         [SerializeField] float weaponRange = 2f;
         Transform target;
         private void Update () {
-            if (target != null && !(Vector3.Distance (transform.position, target.position) < weaponRange)) {
-                GetComponent<Mover> ().MoveTo (target.position);
+
+            if (target == null) return;
+
+            float distanceToTarget = Vector3.Distance (transform.position, target.position);
+
+            Debug.Log("[FIGHTER] Distanza dal target: " + distanceToTarget);
+
+            if (!(distanceToTarget < weaponRange)) {
+                GetComponent<Mover> ().MoveTo(target.position);
             } else {
                 GetComponent<Mover> ().Stop ();
             }
         }
+
         public void Attack (ReactiveTarget combatTarget) {
             target = combatTarget.transform;
+        }
+
+        public void Cancel () {
+            target = null;
         }
 
     }

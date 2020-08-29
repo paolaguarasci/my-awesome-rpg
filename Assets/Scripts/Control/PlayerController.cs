@@ -7,8 +7,8 @@ namespace RPG.Control {
     public class PlayerController : MonoBehaviour {
 
         private void Update () {
-            if (InteractWithCombat ()) return;
             if (InteractWithMovement ()) return;
+            if (InteractWithCombat ()) return;
         }
 
         private bool InteractWithCombat () {
@@ -30,7 +30,7 @@ namespace RPG.Control {
             bool hasHit = Physics.Raycast (GetMouseRay (), out hit);
             if (hasHit) {
                 if (Input.GetMouseButton (0)) {
-                    GetComponent<Mover> ().MoveTo (hit.point);
+                    GetComponent<Mover> ().MoveToAction (hit.point);
                 }
                 return true;
             }
