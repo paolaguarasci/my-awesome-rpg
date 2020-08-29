@@ -7,8 +7,14 @@ namespace RPG.Control {
     public class PlayerController : MonoBehaviour {
 
         private void Update () {
-            if (InteractWithMovement ()) return;
+
+            // ATTENZIONE:
+            // Va prima Combat e poi Movement
+            // altrimenti movement "mangia" l'input
+            // non combatte mai
+
             if (InteractWithCombat ()) return;
+            if (InteractWithMovement ()) return;
         }
 
         private bool InteractWithCombat () {
@@ -18,6 +24,7 @@ namespace RPG.Control {
                 if (target == null) continue;
 
                 if (Input.GetMouseButtonDown (0)) {
+
                     GetComponent<Fighter> ().Attack (target);
                 }
                 return true;
@@ -30,7 +37,7 @@ namespace RPG.Control {
             bool hasHit = Physics.Raycast (GetMouseRay (), out hit);
             if (hasHit) {
                 if (Input.GetMouseButton (0)) {
-                    GetComponent<Mover> ().MoveToAction (hit.point);
+                    GetComponent<Mover> ().MoveTo (hit.point);
                 }
                 return true;
             }
