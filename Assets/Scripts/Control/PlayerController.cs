@@ -5,47 +5,41 @@ using UnityEngine;
 
 namespace RPG.Control {
     public class PlayerController : MonoBehaviour {
-        private Mover mover;
-        private Fighter combat;
-        private SpecialActions specialActions;
 
-        private void Start () {
-            mover = GetComponent<Mover> ();
-            combat = GetComponent<Fighter> ();
-            specialActions = GetComponent<SpecialActions> ();
-        }
         private void Update () {
-            InteractWithMovement ();
-            InteractWithCombat ();
+            if (InteractWithCombat ()) return;
+            if (InteractWithMovement ()) return;
         }
 
-        private void InteractWithCombat () {
-            // Lista di HITs
+        private bool InteractWithCombat () {
             RaycastHit[] hits = Physics.RaycastAll (GetMouseRay ());
             foreach (RaycastHit hit in hits) {
-                if (hit.transform.GetComponent<ReactiveTarget> ()) {
-                    if (Input.GetMouseButtonDown (0)) {
-                        combat.Attack (hit.transform.GetComponent<ReactiveTarget> ());
-                    }
+                ReactiveTarget target = hit.transform.GetComponent<ReactiveTarget> ();
+                if (target == null) continue;
+
+                if (Input.GetMouseButtonDown (0)) {
+                    GetComponent<Fighter> ().Attack (target);
                 }
+                return true;
             }
+            return false;
         }
 
-        private void InteractWithMovement () {
-            if (Input.GetMouseButton (0)) {
-                MoveToCursor ();
+        private bool InteractWithMovement () {
+            RaycastHit hit;
+            bool hasHit = Physics.Raycast (GetMouseRay (), out hit);
+            if (hasHit) {
+                if (Input.GetMouseButton (0)) {
+                    GetComponent<Mover> ().MoveTo (hit.point);
+                }
+                return true;
             }
-        }
-
-        public void MoveToCursor () {
-            if (Physics.Raycast (GetMouseRay (), out RaycastHit hit)) {
-                mover.MoveTo (hit.point);
-            }
-            Debug.DrawRay (GetMouseRay ().origin, GetMouseRay ().direction * 100);
+            return false;
         }
 
         private static Ray GetMouseRay () {
             return Camera.main.ScreenPointToRay (Input.mousePosition);
         }
     }
+
 }

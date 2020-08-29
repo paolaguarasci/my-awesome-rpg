@@ -6,8 +6,17 @@ using UnityEngine;
 namespace RPG.Combat {
 
     public class Fighter : MonoBehaviour {
-        public void Attack (ReactiveTarget enemy) {
-            Debug.Log("Take that you short, squat peasant!");
+        [SerializeField] float weaponRange = 2f;
+        Transform target;
+        private void Update () {
+            if (target != null && !(Vector3.Distance (transform.position, target.position) < weaponRange)) {
+                GetComponent<Mover> ().MoveTo (target.position);
+            } else {
+                GetComponent<Mover> ().Stop ();
+            }
+        }
+        public void Attack (ReactiveTarget combatTarget) {
+            target = combatTarget.transform;
         }
 
     }
