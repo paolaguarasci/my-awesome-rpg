@@ -1,30 +1,49 @@
-﻿using UnityEngine;
+﻿using System;
+using RPG.Combat;
+using RPG.Movement;
+using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+namespace RPG.Control {
+    public class PlayerController : MonoBehaviour {
+        private Mover mover;
+        private Fighter combat;
+        private SpecialActions specialActions;
 
-    private Mover mover;
-    private Combat combat;
-    private SpecialActions specialActions;
-
-    private Ray lastRay;
-
-    private void Start () {
-        mover = GetComponent<Mover> ();
-        combat = GetComponent<Combat> ();
-        specialActions = GetComponent<SpecialActions> ();
-    }
-
-    private void Update () {
-        if (Input.GetMouseButton (0)) {
-            MoveToCursor();
+        private void Start () {
+            mover = GetComponent<Mover> ();
+            combat = GetComponent<Fighter> ();
+            specialActions = GetComponent<SpecialActions> ();
         }
-    }
-
-    public void MoveToCursor () {
-        lastRay = Camera.main.ScreenPointToRay (Input.mousePosition);
-        if (Physics.Raycast (lastRay, out RaycastHit hit)) {
-            mover.MoveTo (hit.point);
+        private void Update () {
+            InteractWithMovement ();
+            InteractWithCombat ();
         }
-        Debug.DrawRay (lastRay.origin, lastRay.direction * 100);
+
+        private void InteractWithCombat () {
+            // Lista di HITs
+            RaycastHit[] hits = Physics.RaycastAll (GetMouseRay ());
+            foreach (RaycastHit hit in hits) {
+                if (hit.transform.GetComponent<ReactiveTarget> ()) {
+                    combat.Attack ();
+                }
+            }
+        }
+
+        private void InteractWithMovement () {
+            if (Input.GetMouseButton (0)) {
+                MoveToCursor ();
+            }
+        }
+
+        public void MoveToCursor () {
+            if (Physics.Raycast (GetMouseRay (), out RaycastHit hit)) {
+                mover.MoveTo (hit.point);
+            }
+            Debug.DrawRay (GetMouseRay ().origin, GetMouseRay ().direction * 100);
+        }
+
+        private static Ray GetMouseRay () {
+            return Camera.main.ScreenPointToRay (Input.mousePosition);
+        }
     }
 }
