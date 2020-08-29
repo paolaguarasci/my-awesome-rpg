@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RPG.Combat {
 
-    public class Fighter : MonoBehaviour {
+    public class Fighter : MonoBehaviour, IAction {
         [SerializeField] float weaponRange = 2f;
         Transform target;
         [SerializeField] private ActionScheduler scheduler;
@@ -21,7 +21,7 @@ namespace RPG.Combat {
             if (!(distanceToTarget < weaponRange)) {
                 GetComponent<Mover> ().MoveTo (target.position);
             } else {
-                GetComponent<Mover> ().Stop ();
+                GetComponent<Mover> ().Cancel ();
             }
         }
 
@@ -34,5 +34,8 @@ namespace RPG.Combat {
             target = null;
         }
 
+        public void Start () {
+            // throw new System.NotImplementedException ();
+        }
     }
 }
