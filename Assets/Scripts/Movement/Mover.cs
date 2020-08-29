@@ -2,14 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using RPG.Combat;
+using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace RPG.Movement {
 
-    public class Mover : MonoBehaviour {
+    public class Mover : MonoBehaviour  {
         [SerializeField] Transform target;
         NavMeshAgent navMeshAgent;
+        [SerializeField] private ActionScheduler scheduler;
 
         private void Start () {
             navMeshAgent = GetComponent<NavMeshAgent> ();
@@ -22,6 +24,7 @@ namespace RPG.Movement {
         public void MoveToAction (Vector3 destination) {
             GetComponent<Fighter> ().Cancel ();
             MoveTo (destination);
+            scheduler.StartAction (this);
         }
 
         public void MoveTo (Vector3 destination) {
