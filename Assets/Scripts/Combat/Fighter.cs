@@ -10,6 +10,7 @@ namespace RPG.Combat {
         [SerializeField] private ActionScheduler scheduler;
         [SerializeField] float weaponRange = 1f;
         [SerializeField] float timeBetweenAttacks = 5f;
+        [SerializeField] float weaponDamage = 5f;
         Transform target;
 
         float timeSinceLastAttack = 0;
@@ -28,12 +29,10 @@ namespace RPG.Combat {
         }
 
         private void AttackBehaviour () {
-            Debug.Log ("Time dall'ultimo attacco " + timeSinceLastAttack);
-            Debug.Log ("Time tra attacchi " + timeBetweenAttacks);
             if (timeSinceLastAttack >= timeBetweenAttacks) {
                 transform.LookAt (target);
                 // if (Input.GetMouseButton (0)) {
-                    GetComponent<Animator> ().SetTrigger ("attack");
+                GetComponent<Animator> ().SetTrigger ("attack");
                 //}
                 timeSinceLastAttack = 0;
             }
@@ -56,6 +55,7 @@ namespace RPG.Combat {
         // Animation Event
         public void Hit () {
             Debug.Log ("Hit!");
+            if (target != null) target.gameObject.GetComponent<Healts> ().TakeDamage (weaponDamage);
         }
     }
 }
